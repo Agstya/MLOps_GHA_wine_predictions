@@ -1,0 +1,27 @@
+name: model-wine-quality
+on: 
+  push:
+    branches:
+      - main
+      - dev
+      - 'releases/*'
+  label:
+     types: [created, edited]
+  workflow_dispatch:
+jobs:
+  run:
+    runs-on: [ubuntu-latest]
+    container: docker://dvcorg/clm-py3:latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: clm_run
+        env:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Your ML Workflow goes here
+          pip install -r requirements.txt
+          python train.py
+
+          echo "MODEL METRICS"
+          cat metrics.txt
+
